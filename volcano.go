@@ -1,6 +1,7 @@
 package msg
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -131,4 +132,17 @@ func (v *VAL) TxLog() {
 	}
 
 	log.Printf("Sending volcanic alert level update: %s %d", v.Volcano.Title, v.VolcanicAlert.Level)
+}
+
+func (v *VAL) AlertUAPush() (message string, tags []string) {
+	if v.Err() != nil {
+		return
+	}
+
+	tags = v.uaTags()
+	message = fmt.Sprintf(`Volcano "%s" has changed its alert level to %d`,
+		v.Volcano.Title,
+		v.VolcanicAlert.Level)
+
+	return
 }

@@ -43,7 +43,8 @@ type android struct {
 }
 
 type extra struct {
-	PublicID string `json:"publicid"`
+	PublicID  string `json:"publicid"`
+	Published string `json:"published"`
 }
 
 // end UA's push object JSON
@@ -61,11 +62,15 @@ func Init(c *cfg.UA) *Client {
 
 	return a
 }
+func (a *Client) PushVal(published string, message string, tags []string) (err error) {
+	return a.composePush(extra{Published: published}, message, tags)
+}
 
 func (a *Client) Push(publicID string, message string, tags []string) (err error) {
-	e := extra{
-		PublicID: publicID,
-	}
+	return a.composePush(extra{PublicID: publicID}, message, tags)
+}
+
+func (a *Client) composePush(extra extra, message string, tags []string) (err error) {
 	i := ios{
 		Badge:            "+1",
 		ContentAvailable: true,
